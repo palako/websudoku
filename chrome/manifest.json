@@ -1,0 +1,26 @@
+{
+    "name": "Websudoku",
+    "version": "1.0",
+    "description": "Solve sudokus instantly!",
+    "permissions": ["activeTab", "declarativeContent", "storage"],
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": false
+    },
+    "page_action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+            "16": "images/favicon.png",
+            "32": "images/favicon.png",
+            "64": "images/favicon.png",
+            "128": "images/favicon.png"
+        },
+        "icons": {
+            "16": "images/favicon.png",
+            "32": "images/favicon.png",
+            "64": "images/favicon.png",
+            "128": "images/favicon.png"
+        }
+    },
+    "manifest_version": 2
+  }

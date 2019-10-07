@@ -1,129 +1,126 @@
-var Sudoku = /** @class */ (function () {
-    function Sudoku(cells) {
+class Sudoku {
+    constructor(cells) {
         this.cells = cells;
         this.candidates = [];
-        for (var x = 0; x < 9; x++) {
+        for (let x = 0; x < 9; x++) {
             this.candidates[x] = [];
-            for (var y = 0; y < 9; y++) {
+            for (let y = 0; y < 9; y++) {
                 this.candidates[x][y] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
             }
         }
     }
-    Sudoku.prototype.getCandidates = function (row, column) {
+    getCandidates(row, column) {
         return this.candidates[row][column];
-    };
-    Sudoku.prototype.isLegalRow = function (row) {
+    }
+    isLegalRow(row) {
         if (row < 0 || row > 8) {
-            console.error("legalRow: row out of range: " + row);
+            console.error("isLegalRow: row out of range: " + row);
             return false;
         }
-        for (var number = 1; number <= 9; number++) {
-            var c = 0;
-            for (var i = 0; i < 9; i++) {
-                if (this.cells[row][i] == number) {
+        for (let n = 1; n <= 9; n++) {
+            let c = 0;
+            for (let i = 0; i < 9; i++) {
+                if (this.cells[row][i] == n) {
                     c++;
                 }
             }
             if (c > 1) {
-                console.log("Illegal row " + row + ": Duplicated number " + number);
+                console.log("isLegalRow " + row + ": Duplicated number " + n);
                 return false;
             }
         }
         return true;
-    };
-    Sudoku.prototype.isLegalColumn = function (column) {
+    }
+    isLegalColumn(column) {
         if (column < 0 || column > 8) {
-            console.error("legalColumn: column out of range: " + column);
+            console.error("isLegalColumn: column out of range: " + column);
             return false;
         }
-        for (var number = 1; number <= 9; number++) {
-            var c = 0;
-            for (var i = 0; i < 9; i++) {
-                if (this.cells[i][column] == number) {
+        for (let n = 1; n <= 9; n++) {
+            let c = 0;
+            for (let i = 0; i < 9; i++) {
+                if (this.cells[i][column] == n) {
                     c++;
                 }
             }
             if (c > 1) {
-                console.log("Illegal column " + column + ": Duplicated number " + number);
+                console.log("isLegalColumn: " + column + ": Duplicated number " + n);
                 return false;
             }
         }
         return true;
-    };
-    Sudoku.prototype.isLegalBox = function (box) {
+    }
+    isLegalBox(box) {
         if (box < 0 || box > 8) {
-            console.error("legalBox: box out of range: " + box);
+            console.error("islegalBox: box out of range: " + box);
             return false;
         }
-        for (var number = 1; number <= 9; number++) {
-            var c = 0;
-            for (var ii = 0; ii < 3; ii++) {
-                var i = 3 * (Math.floor(box / 3)) + ii;
-                for (var jj = 0; jj < 3; jj++) {
-                    var j = (3 * (box % 3)) + jj;
-                    if (this.cells[i][j] == number) {
+        for (let n = 1; n <= 9; n++) {
+            let c = 0;
+            for (let ii = 0; ii < 3; ii++) {
+                let i = 3 * (Math.floor(box / 3)) + ii;
+                for (let jj = 0; jj < 3; jj++) {
+                    let j = (3 * (box % 3)) + jj;
+                    if (this.cells[i][j] == n) {
                         c++;
                     }
                 }
             }
             if (c > 1) {
-                console.log("Illegal box " + box + ": Duplicated number " + number);
+                console.log("isLegalBox: " + box + ": Duplicated number " + n);
                 return false;
             }
         }
         return true;
-    };
-    Sudoku.prototype.isRowSolved = function (row) {
-        for (var number = 1; number <= 9; number++) {
-            var found = false;
-            for (var col = 0; col <= 9 && !found; col++) {
-                if (this.cells[row][col] == number) {
+    }
+    isRowSolved(row) {
+        for (let n = 1; n <= 9; n++) {
+            let found = false;
+            for (let col = 0; col < 9 && !found; col++) {
+                if (this.cells[row][col] == n) {
                     found = true;
                 }
             }
             if (!found) {
-                console.log("isRowSolved: Row " + row + " is not solved");
                 return false;
             }
         }
         return true;
-    };
-    Sudoku.prototype.isColumnSolved = function (col) {
-        for (var number = 1; number <= 9; number++) {
-            var found = false;
-            for (var row = 0; row <= 9 && !found; row++) {
-                if (this.cells[row][col] == number) {
+    }
+    isColumnSolved(col) {
+        for (let n = 1; n <= 9; n++) {
+            let found = false;
+            for (let row = 0; row < 9 && !found; row++) {
+                if (this.cells[row][col] == n) {
                     found = true;
                 }
             }
             if (!found) {
-                console.log("isColumnSolved: Column " + col + " is not solved");
                 return false;
             }
         }
         return true;
-    };
-    Sudoku.prototype.isBoxSolved = function (box) {
-        for (var number = 1; number <= 9; number++) {
-            var found = false;
-            for (var ii = 0; ii < 3 && !found; ii++) {
-                var row = 3 * (Math.floor(box / 3)) + ii;
-                for (var jj = 0; jj < 3 && !found; jj++) {
-                    var col = (3 * (box % 3)) + jj;
-                    if (this.cells[row][col] == number) {
+    }
+    isBoxSolved(box) {
+        for (let n = 1; n <= 9; n++) {
+            let found = false;
+            for (let ii = 0; ii < 3 && !found; ii++) {
+                let row = 3 * (Math.floor(box / 3)) + ii;
+                for (let jj = 0; jj < 3 && !found; jj++) {
+                    let col = (3 * (box % 3)) + jj;
+                    if (this.cells[row][col] == n) {
                         found = true;
                     }
                 }
             }
             if (!found) {
-                console.log("isBoxSolved: Box " + box + " is not solved");
                 return false;
             }
         }
         return true;
-    };
-    Sudoku.prototype.isSolved = function () {
-        for (var i = 0; i < 9; i++) {
+    }
+    isSolved() {
+        for (let i = 0; i < 9; i++) {
             if (!this.isRowSolved(i)) {
                 return false;
             }
@@ -135,38 +132,38 @@ var Sudoku = /** @class */ (function () {
             }
         }
         return true;
-    };
-    Sudoku.prototype.promoteCandidateToPermanent = function (x, y) {
+    }
+    promoteCandidateToPermanent(row, col) {
         //Remove from candidates and add to cells
-        var c = this.candidates[x][y].pop();
-        this.cells[x][y] = c;
-        console.log("[" + x + "," + y + "]=" + c);
+        let c = this.candidates[row][col].pop();
+        this.cells[row][col] = c;
+        console.log("[" + row + "][" + col + "]=" + c);
         //Remove from candidates in the row
-        for (var i = 0; i < 9; i++) {
-            var position = this.candidates[x][i].indexOf(c);
+        for (let i = 0; i < 9; i++) {
+            let position = this.candidates[row][i].indexOf(c);
             if (position != -1) {
-                this.candidates[x][i].splice(position, 1);
-                if (this.candidates[x][i].length == 1) {
-                    this.promoteCandidateToPermanent(x, i);
+                this.candidates[row][i].splice(position, 1);
+                if (this.candidates[row][i].length == 1) {
+                    this.promoteCandidateToPermanent(row, i);
                 }
             }
         }
         //Remove from candidates in the col
-        for (var i = 0; i < 9; i++) {
-            var position = this.candidates[i][y].indexOf(c);
+        for (let i = 0; i < 9; i++) {
+            let position = this.candidates[i][col].indexOf(c);
             if (position != -1) {
-                this.candidates[i][y].splice(position, 1);
-                if (this.candidates[i][y].length == 1) {
-                    this.promoteCandidateToPermanent(i, y);
+                this.candidates[i][col].splice(position, 1);
+                if (this.candidates[i][col].length == 1) {
+                    this.promoteCandidateToPermanent(i, col);
                 }
             }
         }
         //Remove from candidates in the 3x3 box
-        for (var ii = 0; ii < 3; ii++) {
-            var i = (3 * Math.floor(x / 3)) + ii;
-            for (var jj = 0; jj < 3; jj++) {
-                var j = (3 * Math.floor(y / 3)) + jj;
-                var position = this.candidates[i][j].indexOf(c);
+        for (let ii = 0; ii < 3; ii++) {
+            let i = (3 * Math.floor(row / 3)) + ii;
+            for (let jj = 0; jj < 3; jj++) {
+                let j = (3 * Math.floor(col / 3)) + jj;
+                let position = this.candidates[i][j].indexOf(c);
                 if (position != -1) {
                     this.candidates[i][j].splice(position, 1);
                     if (this.candidates[i][j].length == 1) {
@@ -175,9 +172,101 @@ var Sudoku = /** @class */ (function () {
                 }
             }
         }
-    };
-    Sudoku.prototype.isLegal = function () {
-        for (var i = 0; i < 9; i++) {
+    }
+    nonRepeatingCandidatesInRow(row) {
+        let changed = false;
+        //localCandidates is a map of values that had been found from the candidates
+        //in the other cells in the row. 
+        let localCandidates = new Map();
+        for (let col = 0; col < 9; col++) {
+            for (let i = 0; i < this.candidates[row][col].length; i++) {
+                let c = this.candidates[row][col][i];
+                if (!localCandidates.has(c)) {
+                    localCandidates.set(c, col);
+                }
+                else {
+                    //value has been seen before. set to -1 as a flag that 
+                    //the candidate is not unique
+                    localCandidates.set(c, -1);
+                }
+            }
+        }
+        for (let n = 1; n <= 9; n++) {
+            if (localCandidates.has(n) && localCandidates.get(n) >= 0) {
+                let col = localCandidates.get(n);
+                this.candidates[row][col].length = 0;
+                this.candidates[row][col].push(n);
+                this.promoteCandidateToPermanent(row, col);
+                changed = true;
+            }
+        }
+        return changed;
+    }
+    nonRepeatingCandidatesInColumn(col) {
+        let changed = false;
+        //localCandidates is a map of values that had been found from the candidates
+        //in the other cells in the column. 
+        let localCandidates = new Map();
+        for (let row = 0; row < 9; row++) {
+            for (let i = 0; i < this.candidates[row][col].length; i++) {
+                let c = this.candidates[row][col][i];
+                if (!localCandidates.has(c)) {
+                    localCandidates.set(c, row);
+                }
+                else {
+                    //value has been seen before. set to -1 as a flag that 
+                    //the candidate is not unique
+                    localCandidates.set(c, -1);
+                }
+            }
+        }
+        for (let n = 1; n <= 9; n++) {
+            if (localCandidates.has(n) && localCandidates.get(n) >= 0) {
+                let row = localCandidates.get(n);
+                this.candidates[row][col].length = 0;
+                this.candidates[row][col].push(n);
+                this.promoteCandidateToPermanent(row, col);
+                changed = true;
+            }
+        }
+        return changed;
+    }
+    nonRepeatingCandidatesInBox(box) {
+        let changed = false;
+        //localCandidates is a map of values that had been found from the candidates
+        //in the other cells in the column. 
+        let localCandidates = new Map();
+        for (let ii = 0; ii < 3; ii++) {
+            let row = 3 * (Math.floor(box / 3)) + ii;
+            for (let jj = 0; jj < 3; jj++) {
+                let col = (3 * (box % 3)) + jj;
+                for (let i = 0; i < this.candidates[row][col].length; i++) {
+                    let c = this.candidates[row][col][i];
+                    if (!localCandidates.has(c)) {
+                        localCandidates.set(c, 3 * ii + jj);
+                    }
+                    else {
+                        //value has been seen before. set to -1 as a flag that 
+                        //the candidate is not unique
+                        localCandidates.set(c, -1);
+                    }
+                }
+            }
+        }
+        for (let n = 1; n <= 9; n++) {
+            if (localCandidates.has(n) && localCandidates.get(n) >= 0) {
+                let row = 3 * box + Math.floor(localCandidates.get(n) / 3);
+                let col = 3 * box + localCandidates.get(n) % 3;
+                this.candidates[row][col].length = 0;
+                this.candidates[row][col].push(n);
+                this.promoteCandidateToPermanent(row, col);
+                changed = true;
+            }
+        }
+        return changed;
+    }
+    isLegal() {
+        for (let i = 0; i < 9; i++) {
             if (!this.isLegalRow(i)) {
                 return false;
             }
@@ -189,25 +278,59 @@ var Sudoku = /** @class */ (function () {
             }
         }
         return true;
-    };
-    Sudoku.prototype.solve = function () {
-        for (var x = 0; x < 9; x++) {
-            for (var y = 0; y < 9; y++) {
+    }
+    solve() {
+        //This reads the initial configuration of the sudoku and sets the 
+        //list of candidates for those cells to a single value, so that I
+        //can treat them as any other cell that had just been reduced to a
+        //value, without the need of processing these separatedly.
+        console.log("Populating initial values");
+        for (let x = 0; x < 9; x++) {
+            for (let y = 0; y < 9; y++) {
                 if (this.cells[x][y] != 0) {
                     this.candidates[x][y] = [this.cells[x][y]];
                 }
             }
         }
-        for (var x = 0; x < 9; x++) {
-            for (var y = 0; y < 9; y++) {
+        //Knowing that promoteCandidateToPermanent will recursively call itself when
+        //it finds a list of candidates reduced to one single value, I'm going through
+        //the board calling that function for the initial values.
+        console.log("Strategy #1: recursively remove found values from candidate lists of size 1");
+        for (let x = 0; x < 9; x++) {
+            for (let y = 0; y < 9; y++) {
                 if (this.candidates[x][y].length == 1) {
                     this.promoteCandidateToPermanent(x, y);
                 }
             }
         }
-    };
-    return Sudoku;
-}());
+        if (this.isSolved())
+            return;
+        //Once the algorithm reaches this point, the recursive calls to promoteCandidateToPermanent
+        //will have taken care of all the values that can be found by simply eliminating known set
+        //values from the corresponding rows, columns and boxes. At this point the board is either
+        //solved or there are no cells with a single candidate value. They all have 2 or more.
+        //This next step finds cells that contain one value on their candidates list that is not present 
+        //in any of the candidates lists for the same row, column or box
+        console.log("Strategy #2: find values in the row/col/box that only exist in one candidate list from that same row/col/box)");
+        let changed = true;
+        while (changed) {
+            changed = false;
+            console.log("Looping again!");
+            for (let row = 0; row < 9 && !changed; row++) {
+                console.log("checking row " + row);
+                changed = this.nonRepeatingCandidatesInRow(row);
+            }
+            for (let col = 0; col < 9 && !changed; col++) {
+                console.log("checking col " + col);
+                changed = this.nonRepeatingCandidatesInColumn(col);
+            }
+            for (let box = 0; box < 9 && !changed; box++) {
+                console.log("checking box " + box);
+                changed = this.nonRepeatingCandidatesInBox(box);
+            }
+        }
+    }
+}
 /*
 let testCells = [[0,5,1,0,0,0,9,0,7],
                       [0,9,2,0,0,5,0,0,8],

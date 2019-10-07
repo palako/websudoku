@@ -148,7 +148,7 @@ class Sudoku {
         //Remove from candidates and add to cells
         let c = this.candidates[row][col].pop();
         this.cells[row][col] = c;
-        console.log("["+row+"]["+col+"]="+c);
+        //console.log("["+row+"]["+col+"]="+c);
         //Remove from candidates in the row
         for (let i=0; i<9; i++) {
             let position = this.candidates[row][i].indexOf(c);

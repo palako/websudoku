@@ -137,7 +137,7 @@ class Sudoku {
         //Remove from candidates and add to cells
         let c = this.candidates[row][col].pop();
         this.cells[row][col] = c;
-        console.log("[" + row + "][" + col + "]=" + c);
+        //console.log("["+row+"]["+col+"]="+c);
         //Remove from candidates in the row
         for (let i = 0; i < 9; i++) {
             let position = this.candidates[row][i].indexOf(c);
@@ -284,7 +284,6 @@ class Sudoku {
         //list of candidates for those cells to a single value, so that I
         //can treat them as any other cell that had just been reduced to a
         //value, without the need of processing these separatedly.
-        console.log("Populating initial values");
         for (let x = 0; x < 9; x++) {
             for (let y = 0; y < 9; y++) {
                 if (this.cells[x][y] != 0) {
@@ -295,7 +294,6 @@ class Sudoku {
         //Knowing that promoteCandidateToPermanent will recursively call itself when
         //it finds a list of candidates reduced to one single value, I'm going through
         //the board calling that function for the initial values.
-        console.log("Strategy #1: recursively remove found values from candidate lists of size 1");
         for (let x = 0; x < 9; x++) {
             for (let y = 0; y < 9; y++) {
                 if (this.candidates[x][y].length == 1) {
@@ -311,21 +309,16 @@ class Sudoku {
         //solved or there are no cells with a single candidate value. They all have 2 or more.
         //This next step finds cells that contain one value on their candidates list that is not present 
         //in any of the candidates lists for the same row, column or box
-        console.log("Strategy #2: find values in the row/col/box that only exist in one candidate list from that same row/col/box)");
         let changed = true;
         while (changed) {
             changed = false;
-            console.log("Looping again!");
             for (let row = 0; row < 9 && !changed; row++) {
-                console.log("checking row " + row);
                 changed = this.nonRepeatingCandidatesInRow(row);
             }
             for (let col = 0; col < 9 && !changed; col++) {
-                console.log("checking col " + col);
                 changed = this.nonRepeatingCandidatesInColumn(col);
             }
             for (let box = 0; box < 9 && !changed; box++) {
-                console.log("checking box " + box);
                 changed = this.nonRepeatingCandidatesInBox(box);
             }
         }

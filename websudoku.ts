@@ -1,4 +1,4 @@
-class Sudoku {
+/*export */class Sudoku {
     cells: number[][];
     private candidates : number[][][];
     constructor(cells: number[][]) {
@@ -267,8 +267,8 @@ class Sudoku {
         }
         for (let n=1; n<=9; n++) {
             if(localCandidates.has(n) && localCandidates.get(n)>=0) {
-                let row = 3*box + Math.floor(localCandidates.get(n)/3);
-                let col = 3*box + localCandidates.get(n)%3;
+                let row = 3*(Math.floor(box/3)) + Math.floor(localCandidates.get(n)/3);
+                let col = 3*(box%3) + localCandidates.get(n)%3;
                 this.candidates[row][col].length=0;
                 this.candidates[row][col].push(n); 
                 this.promoteCandidateToPermanent(row, col);
@@ -341,20 +341,3 @@ class Sudoku {
         }
     }
 }
-/*
-let testCells = [[0,5,1,0,0,0,9,0,7],
-                      [0,9,2,0,0,5,0,0,8],
-                      [0,0,7,0,1,8,0,5,0],
-                      [0,1,0,8,9,0,0,3,0],
-                      [9,0,0,0,4,0,0,0,6],
-                      [0,2,0,0,5,7,0,8,0],
-                      [0,4,0,7,2,0,8,0,0],
-                      [2,0,0,4,0,0,6,7,0],
-                      [1,0,8,0,0,0,3,2,0]];
-
-let s = new Sudoku(testCells);
-console.log(s.cells);
-s.solve();
-console.log("--------------------------");
-console.log(s.cells);
-*/

@@ -1,14 +1,8 @@
-let changeColor = document.getElementById('changeColor');
+let solveButton = document.getElementById('solveButton');
 
-chrome.storage.sync.get('color', function(data) {
-    changeColor.style.backgroundColor = data.color;
-    changeColor.setAttribute('value', data.color);
-  });
-
-changeColor.onclick = function(element) {
-    let color = element.target.value;
+solveButton.onclick = function(element) {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-      chrome.tabs.executeScript(tabs[0].id,{file: 'websudoku.js'});
-      chrome.tabs.executeScript(tabs[0].id,{file: 'contentScript.js'});
+        chrome.tabs.executeScript(tabs[0].id,{file: 'websudoku.js'});
+        chrome.tabs.executeScript(tabs[0].id,{file: 'contentScript.js'});
     });
   };

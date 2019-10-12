@@ -1,13 +1,20 @@
-/*export */class Sudoku {
+/*export*/ class Sudoku {
     cells: number[][];
     private candidates : number[][][];
+
     constructor(cells: number[][]) {
         this.cells = cells;
         this.candidates = [];
         for(let x=0; x<9; x++) {
             this.candidates[x] = [];
             for (let y=0; y<9; y++) {
-                this.candidates[x][y] = [1,2,3,4,5,6,7,8,9];
+                this.candidates[x][y] = [1,2,3,4,5,6,7,8,9]; 
+                //by initialising the set cells to a single candidate, I can
+                //treat them as any other cell that had just been reduced to a
+                //value, without the need of processing these separatedly.
+                if(this.cells[x][y] != 0) {
+                    this.candidates[x][y] = [this.cells[x][y]];
+                }
             }
         }
     }
@@ -149,6 +156,17 @@
         let c = this.candidates[row][col].pop();
         this.cells[row][col] = c;
         //console.log("["+row+"]["+col+"]="+c);
+        if(!this.isLegalRow(row)) {
+            console.error("isLegalRow: duplicated value " + c + " in row while setting cell " + row +", " +col);
+        }
+        if(!this.isLegalColumn(col)) {
+            console.error("isLegalColumn: duplicated value " + c + " in column while setting cell " + row +", " +col);
+        }
+        let box = Math.floor(row/3) + col%3; 
+        if(!this.isLegalBox(box)) {
+            console.error("isLegalBox: duplicated value " + c + " in box while setting cell " + row +", " +col);
+        }
+        
         //Remove from candidates in the row
         for (let i=0; i<9; i++) {
             let position = this.candidates[row][i].indexOf(c);
@@ -293,30 +311,34 @@
         return true;
     }
     
-    solve() {
-        //This reads the initial configuration of the sudoku and sets the 
-        //list of candidates for those cells to a single value, so that I
-        //can treat them as any other cell that had just been reduced to a
-        //value, without the need of processing these separatedly.
-        for(let x=0; x<9; x++) {
-            for(let y=0; y<9; y++) {
-                if(this.cells[x][y] != 0) {
-                    this.candidates[x][y] = [this.cells[x][y]];
-                }
+    clone() {
+        let cells = [];
+        for(let row=0; row<9; row++) {
+            cells[row] = [];
+            for(let col=0; col<9; col++) {
+                cells[row][col] = this.cells[row][col];
             }
         }
-        
-        //Knowing that promoteCandidateToPermanent will recursively call itself when
-        //it finds a list of candidates reduced to one single value, I'm going through
-        //the board calling that function for the initial values.
-        for(let x=0; x<9; x++) {
-            for(let y=0; y<9; y++) {
-                if(this.candidates[x][y].length == 1) {
-                    this.promoteCandidateToPermanent(x,y);       
-                }
+        let c:Sudoku = new Sudoku(cells);
+        for(let row=0;row<9;row++) {
+            for (let col=0; col<9; col++) {
+                c.candidates[row][col]=this.candidates[row][col].slice();
             }
         }
+        return c;
+    }
 
+    solve() {
+        //Although it seems redundant, knowing that promoteCandidateToPermanent(row, col) will 
+        //recursively call itself when it finds a list of candidates reduced to one single 
+        //value, I'm going through the board calling that function for the initial values.
+        for(let row=0; row<9; row++) {
+            for(let col=0; col<9; col++) {
+                if(this.candidates[row][col].length == 1) {
+                    this.promoteCandidateToPermanent(row, col);       
+                }
+            }
+        }
         if(this.isSolved()) return;
 
         //Once the algorithm reaches this point, the recursive calls to promoteCandidateToPermanent
@@ -339,5 +361,32 @@
                changed = this.nonRepeatingCandidatesInBox(box);
             }
         }
+        if(this.isSolved()) return;
+
+        //Got to this point, we need to start speculating on values, with a backtracking strategy
+        //To minimise the ramifications, we start with the smallest list of candidates
+        let candidatesCount:number = 2;
+        while(!this.isSolved() && candidatesCount <= 9) {
+            for (let row:number=0; row<9; row++) {
+                for (let col:number=0; col<9; col++) {
+                    if (this.candidates[row][col].length == candidatesCount) {
+                        while(this.candidates[row][col].length > 0) {
+                            let r:Sudoku = this.clone();
+                            r.cells[row][col] = r.candidates[row][col].pop();
+                            r.candidates[row][col].length = 0;
+                            r.candidates[row][col].push(r.cells[row][col]);
+                            r.solve();
+                            if(r.isSolved()) {
+                                this.cells = r.cells.slice();
+                                return;
+                            } else {
+                                this.candidates[row][col].pop();
+                            }
+                        }
+                    }
+                }
+            }
+            candidatesCount++;
+        }
     }
-}
+} 
